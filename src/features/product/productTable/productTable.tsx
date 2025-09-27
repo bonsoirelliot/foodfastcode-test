@@ -20,7 +20,7 @@ import {Button} from "@shared/ui/button.tsx";
 import type {Product, DialogMode} from "@shared/types";
 import {Label} from "@shared/ui/label.tsx";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@shared/ui/select.tsx";
-import {ChevronLeftIcon, ChevronRightIcon, ChevronsLeftIcon, ChevronsRightIcon} from "lucide-react";
+import { ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon, ChevronsLeft as ChevronsLeftIcon, ChevronsRight as ChevronsRightIcon } from "lucide-react";
 
 export function ProductTable({data, category, isProductsLoading}: ProductListProps) {
   const [sorting, setSorting] = useState<SortingState>([])

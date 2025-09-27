@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {ChevronLeftIcon, ChevronRightIcon, ChevronsLeftIcon, ChevronsRightIcon} from "lucide-react";
+import { ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon, ChevronsLeft as ChevronsLeftIcon, ChevronsRight as ChevronsRightIcon } from "lucide-react";
 import {
   type ColumnFiltersState,
   flexRender,
