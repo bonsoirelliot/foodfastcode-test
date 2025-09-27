@@ -85,13 +85,72 @@ export const PlaceList = ({
   }
 
   return (
-    <div className="max-w-[1440px] w-full p-4">
+    <div className="max-w-[1440px] w-full p-4 space-y-6">
+      {/* Заголовок страницы */}
+      <div className="bg-card rounded-lg p-6 border shadow-sm">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground mb-2">Мои заведения</h1>
+            <p className="text-muted-foreground">
+              Управляйте своими заведениями и создавайте новые
+            </p>
+          </div>
+          {!isMobile && (
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <div className="text-2xl font-bold text-primary">{data.length}</div>
+                <div className="text-sm text-muted-foreground">Заведений</div>
+              </div>
+              <CreatePlaceButton />
+            </div>
+          )}
+        </div>
+      </div>
+
       {isMobile && (
-        <div className="mb-2">
+        <div className="mb-4">
           <CreatePlaceButton />
         </div>
       )}
-      <div className="w-full flex items-center py-2 mb-2">
+      
+      <div className="bg-card rounded-lg p-4 border shadow-sm">
+        <div className="flex items-center gap-4 mb-4">
+          <h2 className="text-lg font-semibold">Поиск и фильтры</h2>
+        </div>
+        <div className="flex flex-wrap items-center gap-4">
+          <Input
+            placeholder="Поиск заведений..."
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("name")?.setFilterValue(event.target.value)
+            }
+            className="max-w-xs"
+          />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                Статус заведения
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {placeStatuses.map((status) => (
+                <DropdownMenuCheckboxItem
+                  key={status}
+                  checked={selectedStatuses.includes(status)}
+                  onCheckedChange={() => toggleStatus(status)}
+                  onSelect={(event) => {
+                    event.preventDefault()
+                  }}
+                >
+                  {status}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+      
+      <div className="w-full flex items-center py-2 mb-2 hidden">
         <Input
           placeholder="Поиск по названию"
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -129,7 +188,7 @@ export const PlaceList = ({
           </div>
         )}
       </div>
-      <div className="overflow-hidden rounded-lg border">
+      <div className="overflow-hidden rounded-lg border shadow-sm bg-card">
         <Table className="table-fixed">
           <colgroup>
             <col className="w-12" />
@@ -138,12 +197,12 @@ export const PlaceList = ({
             ))}
             <col className="w-12" />
           </colgroup>
-          <TableHeader className="sticky top-0 z-10 bg-muted">
+          <TableHeader className="sticky top-0 z-10 bg-muted/80 backdrop-blur-sm">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} className="font-semibold">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -162,6 +221,7 @@ export const PlaceList = ({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  className="hover:bg-muted/50 cursor-pointer transition-colors"
                   onDoubleClick={(e) => {
                     const target = e.target as HTMLElement;
                     if (isInteractiveTarget(target)) return;
@@ -170,7 +230,7 @@ export const PlaceList = ({
                   }}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="py-4">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -183,9 +243,13 @@ export const PlaceList = ({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-32 text-center text-muted-foreground"
                 >
-                  No results.
+                  <div className="flex flex-col items-center justify-center space-y-2">
+                    <div className="text-4xl">🏪</div>
+                    <div className="font-medium">Пока нет заведений</div>
+                    <div className="text-sm">Создайте свое первое заведение</div>
+                  </div>
                 </TableCell>
               </TableRow>
             )}

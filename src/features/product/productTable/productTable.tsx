@@ -89,13 +89,38 @@ export function ProductTable({data, category, isProductsLoading}: ProductListPro
   const visibleCols = productTable.getVisibleLeafColumns().length;
 
   return (
-    <div className={cn("w-full flex flex-wrap content-start mb-2 mr-2", !isMobile && "max-w-[1440px]")}>
-      <div className="flex items-center gap-2 mb-2">
-        <span className="text-2xl font-semibold tracking-tight text-foreground">
+    <div className={cn("w-full flex flex-wrap content-start mb-6", !isMobile && "max-w-[1440px]")}>
+      <div className="w-full bg-card rounded-lg p-4 border shadow-sm mb-4">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-lg font-semibold text-foreground">
+              {"Товары"}{category?.name && ` в категории "${category?.name}"`}
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              Управляйте товарами в выбранной категории
+            </p>
+          </div>
+          <Button variant="default" onClick={openCreate} className="shadow-md">
+            + Добавить товар
+          </Button>
+        </div>
+        
+        <Input
+          placeholder="Поиск товаров..."
+          value={(productTable.getColumn("name")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            productTable.getColumn("name")?.setFilterValue(event.target.value)
+          }
+          className="mb-0"
+        />
+      </div>
+      
+      <div className="flex items-center gap-2 mb-2 hidden">
+        <span className="text-xl font-semibold tracking-tight text-foreground">
           {"Товары"}{category?.name && ` в категории "${category?.name}"`}
         </span>
       </div>
-      <div className="w-full flex items-center mb-2">
+      <div className="w-full flex items-center mb-2 hidden">
         <Input
           placeholder="Поиск по названию"
           value={(productTable.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -110,7 +135,7 @@ export function ProductTable({data, category, isProductsLoading}: ProductListPro
           </div>
         </div>
       </div>
-      <div className="w-full rounded-lg border overflow-hidden">
+      <div className="w-full rounded-lg border overflow-hidden shadow-sm bg-card">
         <div className={cn("overflow-hidden", enableScroll && "overflow-y-auto")} style={enableScroll ? { maxHeight: maxHeightPx } : undefined}>
           <Table className="table-fixed">
             <colgroup>
@@ -120,12 +145,12 @@ export function ProductTable({data, category, isProductsLoading}: ProductListPro
               ))}
               <col className="w-20"/>
             </colgroup>
-            <TableHeader className="sticky top-0 z-10 bg-muted">
+            <TableHeader className="sticky top-0 z-10 bg-muted/80 backdrop-blur-sm">
               {productTable.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return (
-                      <TableHead key={header.id} className="sticky top-0 z-10">
+                      <TableHead key={header.id} className="sticky top-0 z-10 font-semibold">
                         {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                       </TableHead>
                     )
@@ -139,6 +164,7 @@ export function ProductTable({data, category, isProductsLoading}: ProductListPro
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
+                    className="hover:bg-muted/50 cursor-pointer transition-colors"
                     onDoubleClick={(e) => {
                       const target = e.target as HTMLElement;
                       if (isInteractiveTarget(target)) return;
@@ -151,7 +177,7 @@ export function ProductTable({data, category, isProductsLoading}: ProductListPro
                     }}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
+                      <TableCell key={cell.id} className="py-3">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}
@@ -160,14 +186,21 @@ export function ProductTable({data, category, isProductsLoading}: ProductListPro
               ) : isProductsLoading
                 ?
                 <TableRow>
-                  <TableCell colSpan={visibleCols} className="h-24 text-center">
-                    Загрузка...
+                  <TableCell colSpan={visibleCols} className="h-32 text-center">
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                      <span className="ml-2">Загрузка товаров...</span>
+                    </div>
                   </TableCell>
                 </TableRow>
                 : (
                   <TableRow>
-                    <TableCell colSpan={visibleCols} className="h-24 text-center">
-                      Нет продуктов в выбранной категории
+                    <TableCell colSpan={visibleCols} className="h-32 text-center text-muted-foreground">
+                      <div className="flex flex-col items-center justify-center space-y-2">
+                        <div className="text-4xl">🛍️</div>
+                        <div className="font-medium">Пока нет товаров</div>
+                        <div className="text-sm">Добавьте первый товар в эту категорию</div>
+                      </div>
                     </TableCell>
                   </TableRow>
                 )}

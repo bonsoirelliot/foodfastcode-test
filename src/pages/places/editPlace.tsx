@@ -72,19 +72,43 @@ export function EditPlacePage() {
   }
 
   return (
-    <div className="w-full max-w-[1440px] px-4">
+    <div className="w-full max-w-[1440px] px-4 space-y-6">
       <Toaster position="top-center" richColors/>
-      <div className="relative mb-2 flex flex-col gap-2 md:flex-row md:items-start">
-        <Button type="button" variant="outline" className="self-start absolute" onClick={() => navigate(-1)}>
+      
+      {/* Хлебные крошки и навигация */}
+      <div className="flex items-center justify-between bg-card rounded-lg p-4 border shadow-sm">
+        <div className="flex items-center gap-4">
+          <Button type="button" variant="outline" size="sm" onClick={() => navigate(-1)}>
+            ← Назад к заведениям
+          </Button>
+          <div className="h-6 w-px bg-border" />
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">{place.name}</h1>
+            <p className="text-sm text-muted-foreground">{place.address}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+            Активно
+          </div>
+        </div>
+      </div>
+
+      <div className="relative flex flex-col gap-6">
+        <Button type="button" variant="ghost" className="self-start hidden" onClick={() => navigate(-1)}>
           Назад
         </Button>
-        <Tabs defaultValue="main" className="flex-1 w-full">
-          <TabsList className="mt-12 md:mt-0 md:ml-24 flex flex-wrap">
+        <Tabs defaultValue="main" className="flex-1 w-full space-y-6">
+          <TabsList className="grid w-full grid-cols-3 lg:w-fit lg:grid-cols-3 bg-muted/50 p-1 h-12">
             <TabsTrigger value="main">Основное</TabsTrigger>
             <TabsTrigger value="settings">Настройки</TabsTrigger>
             <TabsTrigger value="menu-settings">Конструктор меню</TabsTrigger>
           </TabsList>
           <TabsContent value="main" ref={tabsContentRef}>
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold mb-2">Управление меню</h2>
+              <p className="text-muted-foreground">Создавайте категории и добавляйте товары для вашего заведения</p>
+            </div>
             <div className={cn(
               "flex justify-between",
               isNarrow ? "flex-wrap" : "flex-nowrap"
@@ -94,9 +118,17 @@ export function EditPlacePage() {
             </div>
           </TabsContent>
           <TabsContent value="settings">
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold mb-2">Настройки заведения</h2>
+              <p className="text-muted-foreground">Измените основную информацию о вашем заведении</p>
+            </div>
             <PlaceSettings place={place}/>
           </TabsContent>
           <TabsContent value="menu-settings">
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold mb-2">Конструктор меню</h2>
+              <p className="text-muted-foreground">Настройте внешний вид меню для ваших клиентов</p>
+            </div>
             <MenuSettings place={place}/>
           </TabsContent>
         </Tabs>

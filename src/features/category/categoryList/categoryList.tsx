@@ -66,15 +66,40 @@ export function CategoryList({data, isCategoriesLoading, isNarrow}: CategoryList
 
   return (
     <div className={cn(
-      "w-full flex flex-wrap content-start mb-2 mr-2",
+      "w-full flex flex-wrap content-start mb-6 mr-6",
       !isNarrow && "max-w-[500px]"
     )}>
-      <div className="flex items-center h-8 gap-2 mb-2">
-        <span className="text-2xl font-semibold tracking-tight text-foreground">
+      <div className="w-full bg-card rounded-lg p-4 border shadow-sm mb-4">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-lg font-semibold text-foreground">
+              Категории товаров
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              Организуйте товары по категориям
+            </p>
+          </div>
+          <Button variant="default" onClick={openCreate} className="shadow-md">
+            + Добавить категорию
+          </Button>
+        </div>
+        
+        <Input
+          placeholder="Поиск категорий..."
+          value={(categoryTable.getColumn("name")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            categoryTable.getColumn("name")?.setFilterValue(event.target.value)
+          }
+          className="mb-4"
+        />
+      </div>
+      
+      <div className="flex items-center h-8 gap-2 mb-2 hidden">
+        <span className="text-xl font-semibold tracking-tight text-foreground">
           Категории
         </span>
       </div>
-      <div className="w-full flex items-center mb-2">
+      <div className="w-full flex items-center mb-2 hidden">
         <Input
           placeholder="Поиск по названию"
           value={(categoryTable.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -87,7 +112,7 @@ export function CategoryList({data, isCategoriesLoading, isNarrow}: CategoryList
           <Button variant="outline" onClick={openCreate}>Добавить</Button>
         </div>
       </div>
-      <div className="w-full rounded-lg border overflow-hidden">
+      <div className="w-full rounded-lg border overflow-hidden shadow-sm bg-card">
         <div
           className={cn(enableScroll && "overflow-y-auto")}
           style={enableScroll ? { maxHeight: maxHeightPx } : undefined}
@@ -99,12 +124,12 @@ export function CategoryList({data, isCategoriesLoading, isNarrow}: CategoryList
               ))}
               <col className="w-42" />
             </colgroup>
-            <TableHeader className="sticky top-0 z-10 bg-muted">
+            <TableHeader className="sticky top-0 z-10 bg-muted/80 backdrop-blur-sm">
               {categoryTable.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return (
-                      <TableHead key={header.id} className="sticky top-0 z-10 pl-4">
+                      <TableHead key={header.id} className="sticky top-0 z-10 pl-4 font-semibold">
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -123,6 +148,7 @@ export function CategoryList({data, isCategoriesLoading, isNarrow}: CategoryList
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
+                    className="hover:bg-muted/50 cursor-pointer transition-colors"
                     onClick={(e) => {
                       const target = e.target as HTMLElement;
                       if (isInteractiveTarget(target)) return;
@@ -131,7 +157,7 @@ export function CategoryList({data, isCategoriesLoading, isNarrow}: CategoryList
                     }}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="pl-4">
+                      <TableCell key={cell.id} className="pl-4 py-3">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
@@ -145,18 +171,29 @@ export function CategoryList({data, isCategoriesLoading, isNarrow}: CategoryList
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}
-                    className="h-24 text-center"
+                    className="h-32 text-center"
                   >
-                    Загрузка...
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                      <span className="ml-2">Загрузка категорий...</span>
+                    </div>
                   </TableCell>
                 </TableRow>
                 : (
                   <TableRow>
                     <TableCell
                       colSpan={columns.length}
-                      className="h-24 text-center"
+                      className="h-32 text-center text-muted-foreground"
                     >
-                      {sorting.length ? "По выбранному фильтру не найдено ни одной категории" : "В данном заведение не добавлены категории"}
+                      <div className="flex flex-col items-center justify-center space-y-2">
+                        <div className="text-4xl">📂</div>
+                        <div className="font-medium">
+                          {sorting.length ? "Категории не найдены" : "Пока нет категорий"}
+                        </div>
+                        <div className="text-sm">
+                          {sorting.length ? "Попробуйте изменить поисковый запрос" : "Создайте первую категорию для организации товаров"}
+                        </div>
+                      </div>
                     </TableCell>
                   </TableRow>
                 )}

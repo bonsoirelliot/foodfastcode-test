@@ -63,7 +63,7 @@ export function AdminSidebar({
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent className="flex flex-col gap-2">
-          <SidebarGroupLabel className="text-lg">Разделы</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-lg font-semibold">Разделы</SidebarGroupLabel>
             <SidebarMenu>
               {baseMenu.map((item) => {
                 const href = item.title === "Меню" ? menuHref : item.url
@@ -71,7 +71,7 @@ export function AdminSidebar({
 
                 return (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild aria-disabled={disabled}>
+                    <SidebarMenuButton asChild aria-disabled={disabled} className="hover:bg-sidebar-accent/80 transition-colors">
                       <Link
                         to={href}
                         className={disabled ? "pointer-events-none opacity-50" : ""}
@@ -82,7 +82,7 @@ export function AdminSidebar({
                         }
                       >
                         <item.icon />
-                        <span className="text-base">{item.title}</span>
+                        <span className="text-base font-medium">{item.title}</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
